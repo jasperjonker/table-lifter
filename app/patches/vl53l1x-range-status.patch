@@ -1,0 +1,12 @@
+diff --git a/drivers/sensor/st/vl53l1x/vl53l1.c b/drivers/sensor/st/vl53l1x/vl53l1.c
+--- a/drivers/sensor/st/vl53l1x/vl53l1.c
++++ b/drivers/sensor/st/vl53l1x/vl53l1.c
+@@ -363,6 +363,7 @@ static int vl53l1x_channel_get(const struct device *dev,
+ 
+ 	val->val1 = (int32_t)(drv_data->data.RangeMilliMeter);
+ 	/* RangeFractionalPart not implemented in API */
+-	val->val2 = 0;
++	/* Table Lifter extension: expose ST range status (0 = valid). */
++	val->val2 = (int32_t)drv_data->data.RangeStatus;
+ 
+ 	return 0;

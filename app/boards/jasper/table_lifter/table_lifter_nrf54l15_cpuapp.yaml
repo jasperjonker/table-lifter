@@ -1,0 +1,14 @@
+identifier: table_lifter/nrf54l15/cpuapp
+name: Table Lifter nRF54L15 application core
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+ram: 256
+flash: 1524
+supported:
+  - gpio
+  - i2c
+  - spi
+  - adc
+  - bluetooth

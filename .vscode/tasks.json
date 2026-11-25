@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Zephyr: board build",
+      "type": "shell",
+      "command": "west build -b table_lifter/nrf54l15/cpuapp --sysbuild app -d build/board -p auto -- -DBOARD_ROOT=${workspaceFolder}/app",
+      "group": "build",
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Zephyr: flash board (J-Link)",
+      "type": "shell",
+      "command": "west flash -d build/board --domain mcuboot --runner jlink --dev-id host.docker.internal --dev-id-type ip --no-rebuild && west flash -d build/board --domain app --runner jlink --dev-id host.docker.internal --dev-id-type ip --no-rebuild",
+      "dependsOn": "Zephyr: board build",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Zephyr: control tests",
+      "type": "shell",
+      "command": "ZEPHYR_TOOLCHAIN_VARIANT=host west build -b native_sim/native/64 app/tests/control -d build/control -p always && ./build/control/zephyr/zephyr.exe",
+      "group": "test",
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}

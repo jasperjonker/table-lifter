@@ -1,0 +1,6 @@
+board:
+  name: table_lifter
+  full_name: Table Lifter nRF54L15
+  vendor: jasper
+  socs:
+    - name: nrf54l15

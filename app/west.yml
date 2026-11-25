@@ -1,0 +1,24 @@
+manifest:
+  version: 0.13
+  projects:
+    - name: zephyr
+      remote: upstream
+      revision: 7cd4b562b30a9bcd76a7288ad90d5e71dd6f87d2
+      import:
+        name-allowlist:
+          - cmsis
+          - cmsis_6
+          - hal_nordic
+          - hal_st
+          - mbedtls
+          - tf-psa-crypto
+          - mcuboot
+          - tinycrypt
+          - zcbor
+          - segger
+          - picolibc
+  remotes:
+    - name: upstream
+      url-base: https://github.com/zephyrproject-rtos
+  self:
+    path: app

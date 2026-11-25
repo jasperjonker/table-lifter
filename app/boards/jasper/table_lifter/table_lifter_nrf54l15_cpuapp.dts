@@ -1,0 +1,137 @@
+/dts-v1/;
+#include <nordic/nrf54l15_cpuapp.dtsi>
+#include <vendor/nordic/nrf54l15_cpuapp_partition.dtsi>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/adc/adc.h>
+#include "table_lifter-pinctrl.dtsi"
+
+/ {
+  model = "Table Lifter nRF54L15";
+  compatible = "jasper,table-lifter";
+  chosen {
+    zephyr,code-partition = &slot0_partition;
+    zephyr,sram = &cpuapp_sram;
+    zephyr,flash-controller = &rram_controller;
+    zephyr,flash = &cpuapp_rram;
+  };
+  aliases {
+    up-button = &up_button;
+    down-button = &down_button;
+    memory1-button = &memory1_button;
+    memory2-button = &memory2_button;
+    led-red = &led_red;
+    led-green = &led_green;
+    led-blue = &led_blue;
+  };
+  buttons {
+    compatible = "gpio-keys";
+    up_button: up_button { gpios = <&gpio0 0 GPIO_ACTIVE_LOW>; label = "Up"; };
+    down_button: down_button { gpios = <&gpio0 1 GPIO_ACTIVE_LOW>; label = "Down"; };
+    memory1_button: memory1_button { gpios = <&gpio0 2 GPIO_ACTIVE_LOW>; label = "Memory 1"; };
+    memory2_button: memory2_button { gpios = <&gpio0 3 GPIO_ACTIVE_LOW>; label = "Memory 2"; };
+  };
+  leds {
+    compatible = "gpio-leds";
+    led_red: led_red { gpios = <&gpio1 2 GPIO_ACTIVE_LOW>; label = "Fault"; };
+    led_green: led_green { gpios = <&gpio1 3 GPIO_ACTIVE_LOW>; label = "Ready"; };
+    led_blue: led_blue { gpios = <&gpio1 16 GPIO_ACTIVE_LOW>; label = "Motion or pairing"; };
+  };
+  table_io: zephyr,user {
+    driver-enable-gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
+    lidar-xshut-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
+    lidar-int-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+    tmc-diag0-gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>;
+    tmc-diag1-gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+    lower-limit-gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
+    upper-limit-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;
+    pd-alert-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+    pd-attach-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+    pd-reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+    io-channels = <&adc 0>;
+  };
+};
+
+&cpuapp_sram { status = "okay"; };
+&hfxo { status = "okay"; };
+&regulators { status = "okay"; };
+&vregmain { status = "okay"; };
+&grtc {
+  status = "okay";
+  owned-channels = <0 1 2 3 4 5 6 7 8 9 10 11>;
+  child-owned-channels = <3 4 7 8 9 10 11>;
+};
+&clock { status = "okay"; };
+&xo { status = "okay"; };
+&lfclk {
+  status = "okay";
+  k32src = "rc";
+  k32src-accuracy-ppm = <250>;
+};
+&gpio0 { status = "okay"; };
+&gpio1 { status = "okay"; };
+&gpio2 { status = "okay"; };
+&gpiote20 { status = "okay"; };
+&gpiote30 { status = "okay"; };
+&radio { status = "okay"; };
+&adc {
+  status = "okay";
+  #address-cells = <1>;
+  #size-cells = <0>;
+  channel@0 {
+    reg = <0>;
+    zephyr,gain = "ADC_GAIN_1_4";
+    zephyr,reference = "ADC_REF_INTERNAL";
+    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+    zephyr,input-positive = <NRF_SAADC_AIN2>;
+    zephyr,resolution = <12>;
+  };
+};
+&spi00 {
+  status = "okay";
+  cs-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;
+  pinctrl-0 = <&spi00_default>;
+  pinctrl-1 = <&spi00_sleep>;
+  pinctrl-names = "default", "sleep";
+  tmc: tmc5160@0 {
+    compatible = "adi,tmc51xx";
+    reg = <0>;
+    /* SPIM00: 128 MHz / 64; 1 MHz exceeds its maximum divisor of 126. */
+    spi-max-frequency = <2000000>;
+    clock-frequency = <16000000>;
+    driver: stepper-driver {
+      compatible = "adi,tmc51xx-stepper-driver";
+      micro-step-res = <16>;
+      en-gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
+    };
+    ramp: motion-controller {
+      compatible = "adi,tmc51xx-stepper-ctrl";
+      irun = <7>;
+      ihold = <2>;
+      iholddelay = <4>;
+      vstart = <1>;
+      vstop = <10>;
+      d1 = <1>;
+    };
+  };
+};
+&i2c20 {
+  status = "okay";
+  pinctrl-0 = <&i2c20_default>;
+  pinctrl-1 = <&i2c20_sleep>;
+  pinctrl-names = "default", "sleep";
+  clock-frequency = <100000>;
+  stusb4500: stusb4500@28 { compatible = "zephyr,i2c-device"; reg = <0x28>; };
+};
+&i2c21 {
+  status = "okay";
+  pinctrl-0 = <&i2c21_default>;
+  pinctrl-1 = <&i2c21_sleep>;
+  pinctrl-names = "default", "sleep";
+  clock-frequency = <400000>;
+  lidar: vl53l1x@29 {
+    compatible = "st,vl53l1x";
+    reg = <0x29>;
+    xshut-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
+  };
+};
+&nfct { status = "disabled"; };

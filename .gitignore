@@ -1,0 +1,17 @@
+/.west/
+/zephyr/
+/modules/
+/bootloader/
+/tools/
+/build*/
+/.venv/
+/.cache/
+/*.pem
+/*.key
+/.vscode/.cortex-debug*
+/android/.gradle/
+/android/app/build/
+/android/local.properties
+
+/android/build/
+**/__pycache__/

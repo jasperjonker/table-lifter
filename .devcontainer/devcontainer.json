@@ -1,0 +1,28 @@
+{
+  "name": "Table Lifter Zephyr",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": false,
+  "workspaceMount": "",
+  "workspaceFolder": "/workspaces/table-lifter",
+  "runArgs": [
+    "--volume=${localWorkspaceFolder}:/workspaces/table-lifter:Z",
+    "--add-host=host.docker.internal:host-gateway"
+  ],
+  "mounts": [
+    "source=table-lifter-signing-v3,target=/home/vscode/.local/share/table-lifter,type=volume",
+    "source=/opt/SEGGER,target=/opt/SEGGER,type=bind,readonly"
+  ],
+  "containerEnv": { "ZEPHYR_BASE": "${containerWorkspaceFolder}/zephyr" },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "nordic-semiconductor.nrf-devicetree",
+        "nordic-semiconductor.nrf-kconfig",
+        "marus25.cortex-debug"
+      ]
+    }
+  }
+}

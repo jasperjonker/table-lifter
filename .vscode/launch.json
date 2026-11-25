@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Table Lifter: SEGGER J-Link attach",
+      "type": "cortex-debug",
+      "request": "attach",
+      "servertype": "external",
+      "device": "nRF54L15_M33",
+      "gdbTarget": "host.docker.internal:2331",
+      "gdbPath": "/usr/bin/gdb-multiarch",
+      "executable": "${workspaceFolder}/build/board/app/zephyr/zephyr.elf",
+      "preLaunchTask": "Zephyr: board build"
+    }
+  ]
+}

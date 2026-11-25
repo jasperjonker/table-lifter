@@ -102,7 +102,7 @@ See [RTT debugging](docs/rtt.md) for the Tag-Connect setup and RTT channels.
 The Ubuntu 26.04 container fetched Zephyr main commit
 `7cd4b562b30a9bcd76a7288ad90d5e71dd6f87d2` and its manifest modules.
 The custom-board MCUboot sysbuild completed and produced
-`build/board/app/zephyr/zephyr.elf` and signed application images. All ten
+`build/board/app/zephyr/zephyr.elf` and signed application images. All eleven
 controller tests pass on this pinned revision. The Android debug APK also
 builds with JDK 17, SDK 37.0, Gradle 9.6.0 and AGP 9.4.0; its location is
 `android/app/build/outputs/apk/debug/app-debug.apk`. The executable

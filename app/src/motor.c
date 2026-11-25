@@ -183,3 +183,35 @@ struct lifter_motor_diagnostics lifter_motor_diagnostics(void)
     k_spin_unlock(&diagnostics_lock, key);
     return copy;
 }
+
+int lifter_motor_position(int32_t *position)
+{
+    if (!initialized) return -ENODEV;
+    return stepper_ctrl_get_actual_position(ramp, position);
+}
+
+int lifter_motor_counted_stop(void)
+{
+    if (!initialized) return -ENODEV;
+    /* At 400 microsteps/s, maximum AMAX stops in well under one millisecond.
+     * Keep the bridge enabled until VACTUAL is zero so no disabled ramp
+     * steps get counted as movement. The next run restores its ramp. */
+    int err = tmc_write(0x26, 65535);
+    if (!err) err = stepper_ctrl_stop(ramp);
+    bool stopped = false;
+    for (int i = 0; !err && i < 20; ++i) {
+        uint32_t velocity;
+        err = tmc_read(0x22, &velocity);
+        if (!err && (velocity & 0xffffffu) == 0) {
+            stopped = true;
+            break;
+        }
+        k_msleep(1);
+    }
+    int disable_err = stepper_disable(driver);
+    enabled = false;
+    running = LIFTER_IDLE;
+    running_slow = false;
+    running_quiet = false;
+    return err ? err : (disable_err ? disable_err : (stopped ? 0 : -ETIMEDOUT));
+}

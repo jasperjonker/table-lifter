@@ -64,6 +64,14 @@ struct lifter_config {
 /** @brief Read fail-closed endstops; bit 0 lower and bit 1 upper. */
 uint8_t lifter_limits_read(void);
 
+/** @brief Read commanded microstep position; not encoder feedback. */
+int lifter_motor_position(int32_t *position);
+/** @brief Stop the ramp before disabling outputs; returns error if count is uncertain. */
+int lifter_motor_counted_stop(void);
+
+/** @brief Overlay blue LED feedback for a pressed handset button. */
+void lifter_led_button_feedback(bool pressed);
+
 #define LIFTER_VALID_PRESET1 0x01u
 #define LIFTER_VALID_PRESET2 0x02u
 #define LIFTER_VALID_BOUNDS 0x04u

@@ -1,0 +1,6 @@
+/* Temporary mode: no LiDAR initialization, normally OPEN limit switches. */
+&lidar { status = "disabled"; };
+&table_io {
+    lower-limit-gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
+    upper-limit-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+};

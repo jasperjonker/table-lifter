@@ -119,3 +119,9 @@ See [handset and limit-switch wiring](docs/wiring.md). The default build uses
 normal controls and does not rotate automatically at boot. The separate
 TABLE_LIFTER_BENCH_TEST and TABLE_LIFTER_SPI_PROBE CMake options are OFF by
 default; do not enable the automatic bench image on a coupled table.
+
+## Temporary rotation-based handset mode
+
+For the sensor-repair test, see [rotation test](docs/rotation-test.md). This opt-in
+build uses normally open endstops and volatile step-count memories, with LiDAR
+and Bluetooth disabled. The default normal-control build is unchanged.

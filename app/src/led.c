@@ -41,3 +41,10 @@ void lifter_led_update(const struct lifter_status *status)
                           (status->motion != LIFTER_IDLE || status->pairing_window ||
                            (status->maintenance && (k_uptime_get_32() / 500u) % 2u == 0u)));
 }
+
+void lifter_led_button_feedback(bool pressed)
+{
+    /* Call after the regular status update so release restores that display.
+     * Leave red fault indication intact while confirming button detection. */
+    if (pressed) (void)gpio_pin_set_dt(&blue, 1);
+}
